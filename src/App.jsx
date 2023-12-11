@@ -1,35 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import Line from "./Line";
+import Message from "./Message";
 
 function App() {
-  const [count, setCount] = useState(0)
+  let tip = 0;
+  const [billTotal, setBillTotal] = useState(0);
+  const [youService, setYouService] = useState(0.1);
+  const [friendService, setFriendService] = useState(0.1);
+
+  function handleChange(e) {
+    setBillTotal(e.target.value);
+  }
+  function handleYou(e) {
+    const newYouService = parseFloat(e.target.value);
+    setYouService(newYouService);
+  }
+
+  function handleFriend(e) {
+    console.log(e);
+    setFriendService(parseFloat(e.target.value));
+  }
+
+  function handleReset() {
+    setBillTotal(0);
+    setYouService(0.1);
+    setFriendService(0.1);
+  }
+
+  console.log("billTotal:", billTotal);
+  console.log("youService:", youService);
+  console.log("friendService:", friendService);
+  console.log("tip:", tip);
+
+  tip = (billTotal * (youService + friendService)) / 2;
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Line
+        message="How much was the bill?"
+        billTotal={billTotal}
+        onHandleChange={handleChange}
+      >
+        <input
+          type="number"
+          value={billTotal}
+          onChange={(e) => handleChange(e)}
+        ></input>
+      </Line>
+      <Line
+        message="How did you like service?"
+        billTotal={billTotal}
+        onHandleChange={handleChange}
+      >
+        <select onChange={handleYou}>
+          <option value=".1">Just Ok (10%)</option>
+          <option value=".15">Good (15%)</option>
+          <option value=".2">Fabulous (20%)</option>
+        </select>
+      </Line>
+      <Line
+        message="How did your friend like the service?"
+        billTotal={billTotal}
+        onHandleChange={handleFriend}
+      >
+        <select value={friendService} onChange={handleFriend}>
+          <option value=".1">Just Ok (10%)</option>
+          <option value=".15">Good (15%)</option>
+          <option value=".2">Fabulous (20%)</option>
+        </select>
+      </Line>
+      <Message billTotal={billTotal} tip={tip} />
+      <button onClick={handleReset}>Reset</button>
+    </div>
+  );
 }
 
-export default App
+export default App;
